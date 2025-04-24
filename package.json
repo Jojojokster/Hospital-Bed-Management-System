@@ -22,6 +22,6 @@
     "sequelize": "^6.37.5"
   },
   "scripts": {
-    "start": "py predictAPI.py & sleep 2 && node app.js"
+    "start": "py predictAPI.py & sleep 10 && node app.js"
   }
 }
