@@ -1,0 +1,33 @@
+<%- include('./layouts/header') %>
+
+    <div class="form_container">
+        <!-- Signup Form -->
+        <div class="form signup_form">
+            <form action="/auth/register" method="POST">
+                <h2>Signup</h2>
+                <div class="input_box">
+                    <input type="text" name="name" placeholder="Enter your name" required />
+                    <i class="uil uil-user user"></i>
+                </div>
+                <div class="input_box">
+                    <input type="email" name="email" placeholder="Enter your email" id="email" value="<%= locals.email ? email : '' %>" required />
+                    <i class="uil uil-envelope-alt email"></i>
+                </div>
+                <div class="input_box">
+                    <input type="password" name="password" placeholder="Create password" id="password" required />
+                    <i class="uil uil-lock password"></i>
+                    <i class="uil uil-lock-eye-slash pw_hide"></i>
+                </div>
+                <div class="input_box">
+                    <input type="password" name="password2" placeholder="Confirm password" id="password2" required />
+                    <i class="uil uil-lock password"></i>
+                    <i class="uil uil-lock-eye-slash pw_hide"></i>
+                </div>
+                <button class="button">Signup Now</button>
+                <div class="login_signup">Already have an account? <a href="/auth/login" id="login">Login</a></div>
+                <div id="error-message" class="error-message" style="color: red; margin-top: 10px; display: none;"></div>
+                <div id="success-message" class="success-message" style="color: red; margin-top: 10px; display: none;"></div>
+            </form>
+        </div>
+    </div>
+    <%- include('./layouts/footer') %>

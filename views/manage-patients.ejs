@@ -1,0 +1,202 @@
+<%- include('./layouts/header') %>
+  <container class="table_container">
+    <h1 class="table">Manage Patients</h1>
+    <div class="patient_table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Forename</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Bed</th>
+            <th>Admission Type</th>
+            <th>Update</th>
+            <th>Patient Info</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% patients.forEach(patient=> { %>
+            <tr>
+              <!-- Patient ID -->
+              <td>
+                <%= patient.patient_id %>
+              </td>
+
+              <!-- Update Form -->
+              <form class="manage-form" action="/moderator/update-patient" method="POST">
+
+                <!-- Hidden Patient ID -->
+                <input type="hidden" name="patient_id" value="<%= patient.patient_id %>" />
+
+                <!-- Editable First Name Field -->
+                <td><input type="text" name="patient_forename" value="<%= patient.patient_forename %>"
+                    placeholder="First Name" /></td>
+
+                <!-- Editable Surname Field -->
+                <td><input type="text" name="patient_surname" value="<%= patient.patient_surname %>"
+                    placeholder="Surname" /></td>
+
+                <!-- Editable Email Field -->
+                <td><input type="email" name="email" value="<%= patient.email %>" placeholder="Email" /></td>
+
+                <!-- Editable Phone Field -->
+                <td><input type="text" name="phone" value="<%= patient.phone %>" placeholder="Phone" /></td>
+
+                <td>
+                  <% if (patient.bedDetails) { %>
+                    Bed Number: <%= patient.bedDetails.bed_number %><br>
+                      Ward: <%= patient.bedDetails.ward || 'N/A' %><br>
+                        Room: <%= patient.bedDetails.room %><br>
+                          Floor: <%= patient.bedDetails.floor %><br>
+                            <% } else { %>
+                              Not Assigned
+                              <% } %>
+                </td>
+
+                <!-- Editable Admission Field -->
+                <td>
+                  <div class="select-menu-1" id="admission-dropdown">
+                    <!-- Button to Toggle Dropdown -->
+                    <div class="select-btn">
+                      <span class="sBtn-text">
+                        <%= patient.admission ? patient.admission.charAt(0).toUpperCase() +
+                          patient.admission.slice(1).replace(/([A-Z])/g, ' $1' ) : 'Select Admission Type' %>
+                      </span>
+                      <i class="bx bx-chevron-down"></i>
+                    </div>
+
+                    <!-- Dropdown Options -->
+                    <ul class="options" style="display: none;">
+                      <li class="option" data-value="emergency">Emergency</li>
+                      <li class="option" data-value="outpatient">Outpatient</li>
+                      <li class="option" data-value="inpatient">Inpatient</li>
+                      <li class="option" data-value="day_patient">Day Patient</li>
+                      <li class="option" data-value="urgent">Urgent</li>
+                      <li class="option" data-value="routine">Routine</li>
+                      <li class="option" data-value="elective">Elective</li>
+                      <li class="option" data-value="direct">Direct</li>
+                      <li class="option" data-value="holding">Holding</li>
+                    </ul>
+
+                    <!-- Hidden Input for Form Submission -->
+                    <input type="hidden" name="admission" value="<%= patient.admission || '' %>" />
+                  </div>
+                </td>
+
+                <!-- Submit Button -->
+                <td><input type="submit" value="Update" class="button" /></td>
+              </form>
+
+              <!-- Patient Info -->
+              <td><button class="button" data-patient-id="<%= patient.patient_id %>" id="patientinfobtn">Info</button>
+              </td>
+
+              <!-- Dropdown for Actions -->
+              <td>
+                <div class="select-menu-2" id="actions-dropdown">
+                  <div class="select-btn">
+                    <span class="sBtn-text">Actions</span>
+                    <i class="bx bx-chevron-down"></i>
+                  </div>
+                  <ul class="options">
+                    <% if (!patient.isAssignedToBed) { %>
+                      <li class="option" data-action="assign-bed" data-patient-id="<%= patient.patient_id %>">Assign Bed
+                      </li>
+                      <% } else { %>
+                        <li class="option" data-action="extend-stay" data-patient-id="<%= patient.patient_id %>">Extend
+                          Stay</li>
+                        <li class="option" data-action="discharge" data-patient-id="<%= patient.patient_id %>">Discharge
+                        </li>
+                        <li class="option" data-action="reassign" data-patient-id="<%= patient.patient_id %>">Re-Assign
+                          Bed</li>
+                        <% } %>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </container>
+
+  <!-- Assign Bed Modal -->
+  <div class="modal" id="assignBedModal">
+    <div class="form_container">
+      <h2>Assign Bed</h2>
+      <form action="/moderator/assign-bed" method="POST">
+        <!-- Hidden Patient ID -->
+        <input type="hidden" name="patient_id" id="assignBedPatientId" />
+
+        <!-- Bed Number Input -->
+        <div class="input_box">
+          <label>Bed Number</label>
+          <input type="text" name="bed_number" min="1" required />
+        </div>
+
+        <!-- Duration Input -->
+        <div class="input_box">
+          <label>Duration (days)</label>
+          <input type="number" name="duration" min="1" required />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="button">Assign Bed</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Extend Stay Modal -->
+  <div class="modal" id="extendStayModal">
+    <div class="form_container">
+      <h2>Extend Stay</h2>
+      <form action="/moderator/extend-stay" method="POST">
+        <!-- Hidden Patient ID -->
+        <input type="hidden" name="patient_id" id="extendStayPatientId" />
+
+        <!-- Duration Input -->
+        <div class="input_box">
+          <label>Duration (days)</label>
+          <input type="number" name="duration" min="1" required />
+        </div>
+
+        <!-- Reason Input -->
+        <div class="input_box">
+          <label>Reason for Extension</label>
+          <input type="text" name="reason" required />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="button">Extend Stay</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Discharge Confirmation Modal -->
+  <div class="modal" id="dischargeModal">
+    <div class="form_container">
+      <h2>Confirm Discharge</h2>
+      <form action="/moderator/discharge-patient" method="POST">
+        <input type="hidden" name="patient_id" id="dischargePatientId" />
+        <p>Are you sure you want to discharge this patient?</p>
+        <button type="submit" class="button">Confirm Discharge</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reassign Confirmation Modal -->
+  <div class="modal" id="reassignModal">
+    <div class="form_container">
+      <h2>Confirm Reassignment</h2>
+      <form action="/moderator/reassign-patient" method="POST">
+        <input type="hidden" name="patient_id" id="reassignPatientId" />
+        <p>Are you sure you want to re-assign this patient?</p>
+        <button type="submit" class="button">Confirm Reassignment</button>
+      </form>
+    </div>
+  </div>
+
+<%- include('./layouts/footer') %>

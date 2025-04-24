@@ -1,0 +1,70 @@
+<%- include('./layouts/header') %>
+
+    <div class="profile">
+        <h1><span class="goback" onclick="window.history.back()">←</span> Profile</h1>
+        <input type="hidden" name="user_id" value="<%= person.id %>" />
+        <div>
+            <p class="title">ID</p>
+            <p class="subtitle">
+                <%= person.id %>
+            </p>
+        </div>
+        <div>
+            <p class="title">Email/username</p>
+            <p class="subtitle">
+                <%= person.email %>
+            </p>
+        </div>
+        <div class="password-edit">
+            <div>
+                <p class="title">Password</p>
+                <p class="subtitle">********</p>
+            </div>
+            <button id="edit-button">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                    fill="#B7B7B7">
+                    <path
+                        d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z" />
+                </svg>
+            </button>
+        </div>
+        <div>
+            <p class="title">Role</p>
+            <p class="subtitle">
+                <%= person.role %>
+            </p>
+        </div>
+    </div>
+
+    <!-- Edit Password Modal -->
+  <div class="modal" id="editModal">
+    <div class="form_container">
+      <h2>Update Password</h2>
+      <form action="/auth/update-password" method="POST">
+        <!-- Hidden User ID -->
+        <input type="hidden" name="id" id="userEditId" />
+
+        <!-- Password Input -->
+        <div class="input_box">
+          <label>Current Password</label>
+          <input type="text" name="password" required />
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="input_box">
+            <label>Confirm Password</label>
+            <input type="text" name="confirm_password" required />
+        </div>
+
+        <!-- New Password Input -->
+        <div class="input_box">
+            <label>New Password</label>
+            <input type="text" name="new_password" required />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="button">Change Password</button>
+      </form>
+    </div>
+  </div>
+<%- include('./layouts/footer') %>

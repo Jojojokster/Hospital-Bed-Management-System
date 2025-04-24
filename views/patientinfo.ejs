@@ -1,0 +1,84 @@
+<%- include('./layouts/header') %>
+<div class="patient_info">
+    <h1><span class="goback" onclick="window.history.back()">←</span><%= patient.patient_forename %> <%= patient.patient_surname %> Info</h1>
+
+    <!-- Patient Basic Information -->
+    <div>
+        <p class="title">ID</p>
+        <p class="subtitle"><%= patient.patient_id %></p>
+    </div>
+    <div>
+        <p class="title">Email</p>
+        <p class="subtitle"><%= patient.email %></p>
+    </div>
+    <div>
+        <p class="title">Forename</p>
+        <p class="subtitle"><%= patient.patient_forename %></p>
+    </div>
+    <div>
+        <p class="title">Surname</p>
+        <pre class="subtitle"><%= patient.patient_surname %></pre>
+    </div>
+    <div>
+        <p class="title">Phone</p>
+        <pre class="subtitle"><%= patient.phone %></pre>
+    </div>
+
+    <!-- Patient Readmissions -->
+    <div><button class="button" data-patient-id="<%= patient.patient_id %>" id="patientreadmissionbtn">Re-Admissions</button></div>
+
+    <!-- Update Patient Form -->
+    <form class="patient_reason" action="/moderator/update-patient" method="POST">
+        <!-- Hidden Patient ID -->
+        <input type="hidden" name="patient_id" value="<%= patient.patient_id %>" />
+
+        <!-- Reason For Stay -->
+        <div>
+            <p class="title">Reason For Stay</p>
+            <textarea rows="4" cols="60" name="reason_for_stay"><%= patient.reason_for_stay %></textarea>
+        </div>
+
+        <!-- Extension Reason -->
+        <div>
+            <p class="title">Extension Reason</p>
+            <textarea rows="4" cols="60" name="extension_reason"><%= patient.extension_reason %></textarea>
+        </div>
+
+        <!-- Binary Fields (Medical Conditions) -->
+        <div>
+            <p class="title">Medical Conditions</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <% const binCols = ["dialysisrenalendstage", "asthma", "irondef", "pneum", "substancedependence", "psychologicaldisordermajor", "depress", "psychother", "fibrosisandother", "malnutrition", "hemo"]; %>
+                <% binCols.forEach((col) => { %>
+                    <label>
+                        <input type="checkbox" name="<%= col %>" value="true" <%= patient[col] ? 'checked' : '' %> />
+                        <%= col.charAt(0).toUpperCase() + col.slice(1).replace(/([A-Z])/g, ' $1') %>
+                    </label>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- Numeric Fields (Lab Results or Measurements) -->
+        <div>
+            <p class="title">Lab Results / Measurements</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <% const numCols = ["hematocrit", "neutrophils", "sodium", "glucose", "bloodureanitro", "creatinine", "bmi", "pulse", "respiration", "secondarydiagnosis"]; %>
+                <% numCols.forEach((col) => { %>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="width: 200px;"><%= col.charAt(0).toUpperCase() + col.slice(1).replace(/([A-Z])/g, ' $1') %>:</label>
+                        <input type="number" step="0.01" name="<%= col %>" value="<%= patient[col] || '' %>" placeholder="Enter value" />
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <div>
+            <p class="title">Predicted Length Of Stay</p>
+            <span><%= patient.predicted_length_of_stay %></span>
+        </div>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Update" class="button" />
+    </form>
+</div>
+<%- include('./layouts/footer') %>

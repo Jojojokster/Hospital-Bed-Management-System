@@ -1,0 +1,26 @@
+<nav class="nav">
+    <a href="/" class="nav_logo">Hospite</a>
+    <ul class="nav_items">
+        <li class="nav_item">
+            <% if (!['admin', 'moderator'].includes(user?.role)) { %>
+                <a href="/about" class="nav_link">About</a>
+                <a href="/contact" class="nav_link">Contact</a>
+            <% } %>
+            <% if (user?.role === 'admin') { %>
+                <a href="/admin/users" class="nav_link">Manage Users</a>
+            <% } %>
+            <% if (user?.role === 'admin' || user?.role === 'moderator') { %>
+                <a href="/moderator/patients" class="nav_link">Manage Patients</a>
+            <% } %>
+            <% if (user?.role === 'admin' || user?.role === 'moderator') { %>
+                <a href="/moderator/manage-beds" class="nav_link">Manage Beds</a>
+            <% } %>
+            <% if (user?.role === 'admin' || user?.role === 'moderator') { %>
+                <a href="/moderator/patientregister" class="nav_link">Register Patient</a>
+            <% } %>
+            <% if (user) { %>
+                <a href="/user/profile" class="nav_link">Profile</a>
+            <% } %>
+        </li>
+    </ul>
+</nav>

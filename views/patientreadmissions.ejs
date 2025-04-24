@@ -1,0 +1,30 @@
+<%- include('./layouts/header') %>
+    <div class="patient_info">
+        <h1><span class="goback" onclick="window.history.back()">←</span><%= patient.patient_forename %> <%= patient.patient_surname %> Logs</h1>
+        <% if (logs && logs.length > 0) { %>
+            <!-- Re-Admission Date -->
+            <% logs.forEach(log=> { %>
+                <div>
+                    <p class="title">Date</p>
+                    <p class="subtitle">
+                        <%= log.readmission_date %>
+                    </p>
+                </div>
+                <!-- Update Form -->
+                <form class="manage-form" action="/moderator/update-patient" method="POST">
+
+                    <!-- Re-Admission Reason -->
+                    <div>
+                        <p class="title">Re-Admission Reason </p>
+                        <textarea rows="4" cols="60" name="readmission_reason"><%= log.reason %></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <td><input type="submit" value="Update" class="button" /></td>
+                </form>
+            <% }); %>
+        <% } else { %>
+            <h1>No Re-Admissions Recorded</h1>
+        <% } %>
+    </div>
+<%- include('./layouts/footer') %>

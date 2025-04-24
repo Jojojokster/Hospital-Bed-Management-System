@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hospite</title>
+<link rel="stylesheet" href="/style.css">
+<!-- Unicons -->
+<link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'/>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <%- include('./sidebar') %>
+        <% if (user) { %>
+            <form class="log" action="/logout" method="POST">
+                <button class="button" type="submit" id="logout">Logout</button>
+            </form>
+        <% } else if (currentPage !== 'login' && currentPage !== 'signup') { %>
+            <button href="/login" class="button" id="loginPage">Login</button>
+        <% } %>
+    </header>
+    <%- include('./flash-message') %>

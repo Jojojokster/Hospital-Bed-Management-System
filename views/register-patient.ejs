@@ -1,0 +1,71 @@
+<%- include('./layouts/header') %>
+<div class="form_container">
+  <div class="form signup_form">
+    <form action="/moderator/patientregister" method="POST">
+      <h1>Register Patient</h1>
+
+      <!-- First Name -->
+      <div class="input_box">
+        <input type="text" name="patient_forename" placeholder="First Name" required />
+        <i class="uil uil-user user"></i>
+      </div>
+
+      <!-- Last Name -->
+      <div class="input_box">
+        <input type="text" name="patient_surname" placeholder="Last Name" required />
+        <i class="uil uil-user user"></i>
+      </div>
+
+      <!-- Email -->
+      <div class="input_box">
+        <input type="email" name="email" placeholder="Email" required />
+        <i class="uil uil-envelope-alt email"></i>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="input_box">
+        <input type="text" name="phone" placeholder="Phone Number" required />
+        <i class="uil uil-phone phone"></i>
+      </div>
+
+      <!-- Gender -->
+      <div class="input_box">
+        <label for="gender" style="font-size: 14px; margin-bottom: 8px;">Gender:</label>
+        <select name="gender" id="gender" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+          <option value="" disabled selected>Select Gender</option>
+          <option value="F">Female</option>
+          <option value="M">Male</option>
+        </select>
+      </div>
+
+      <!-- Admission -->
+      <div class="input_box">
+        <label for="gender" style="font-size: 14px; margin-bottom: 8px;">Admission:</label>
+        <select name="admission" id="admission" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+          <option value="" disabled selected>Select Admission</option>
+          <option value="emergency">Emergency</option>
+          <option value="outpatient">Outpatient</option>
+          <option value="inpatient">Inpatient</option>
+          <option value="day_patient">Day Patient</option>
+          <option value="urgent">Urgent</option>
+          <option value="routine">Routine</option>
+          <option value="direct">Direct</option>
+          <option value="holding">Holding</option>
+        </select>
+      </div>
+
+      <!-- Reason For Stay -->
+      <div class="input_box">
+        <textarea rows="10" cols="40" name="reason_for_stay" placeholder="Reason For Stay" required></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button class="button" type="submit">Register Patient</button>
+
+      <!-- Error and Success Messages -->
+      <div id="error-message" class="error-message" style="color: red; margin-top: 10px; display: none;"></div>
+      <div id="success-message" class="success-message" style="color: green; margin-top: 10px; display: none;"></div>
+    </form>
+  </div>
+</div>
+<%- include('./layouts/footer') %>

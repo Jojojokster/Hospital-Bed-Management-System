@@ -1,0 +1,13 @@
+<%- include('./layouts/header') %>
+
+    <div class="form_1">
+        <section class="admin">
+            <h2>Check Weather</h2>
+            <form action="/weather" method="GET">
+                <input class="user_input" type="text" name="user" placeholder="Enter city name" required />
+                <button class="button" type="submit">Get Weather</button>
+            </form>
+        </section>
+    </div>
+
+    <%- include('./layouts/footer') %>

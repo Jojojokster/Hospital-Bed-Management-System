@@ -1,0 +1,29 @@
+<%- include('./layouts/header') %>
+    <div class="form_container">
+        <!-- Login Form -->
+        <div class="form login_form">
+            <form id="loginForm" action="/auth/login" method="POST">
+                <h2>Login</h2>
+                <div class="input_box">
+                    <input type="email" name="email" placeholder="Enter your email" required />
+                    <i class="uil uil-envelope-alt email"></i>
+                </div>
+                <div class="input_box">
+                    <input type="password" name="password" placeholder="Enter your password" required />
+                    <i class="uil uil-lock password"></i>
+                    <i class="uil uil-lock-eye-slash pw_hide"></i>
+                </div>
+                <div class="option_field">
+                    <span class="checkbox">
+                        <input type="checkbox" id="check">
+                        <label for="check">Remember me</label>
+                    </span>
+                    <a href="#" class="forget_pw">Forgot password?</a>
+                </div>
+                <button type="submit" class="button">Login Now</button>
+                <div class="login_signup">Don't have an account? <a href="/auth/register" id="signup">Signup Now</a></div>
+                <div id="error-message" class="error-message" style="color: red; margin-top: 10px; display: none;"></div>
+            </form>
+        </div>
+    </div>
+    <%- include('./layouts/footer') %>
