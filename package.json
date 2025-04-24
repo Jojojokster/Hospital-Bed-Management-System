@@ -20,5 +20,8 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "sequelize": "^6.37.5"
+  },
+  "scripts": {
+    "start": "py predictAPI.py & sleep 2 && node app.js"
   }
 }
