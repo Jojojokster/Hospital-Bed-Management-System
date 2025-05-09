@@ -26,6 +26,22 @@ router.post(
 );
 
 router.post(
+  '/reset-pass',
+  ensureLoggedOut({ redirectTo: '/' }),
+  async (req, res, next) => {
+    try {
+      const { email } = req.body;
+
+      const user = await User.findOne({ where: { email } });
+
+
+    } catch {
+
+    }
+  }
+)
+
+router.post(
   '/update-password',
   ensureLoggedIn({ redirectTo: '/login' }),
   async (req, res, next) => {
@@ -57,6 +73,14 @@ router.post(
       next(error)
     }
   } 
+)
+
+router.get(
+  '/forgot-password',
+  ensureLoggedOut({ redirectTo: '/' }),
+  async (req, res, next) => {
+    res.render('forgot-password', { currentPage: 'forgot-password' });
+  }
 )
 
 router.get(

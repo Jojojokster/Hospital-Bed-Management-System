@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const createHttpError = require('http-errors');
 const { roles } = require('../utils/constants');
 const sequelize = require('../config/database');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const User = sequelize.define('User', {
@@ -21,6 +22,12 @@ const User = sequelize.define('User', {
   },
   role: {
     type: DataTypes.ENUM(roles.admin, roles.moderator, roles.client),
+  },
+  passwordResetToken: {
+    type: DataTypes.STRING,
+  },
+  passwordResetTokenExpires: {
+    type: DataTypes.DATE,
   },
 }, {
   timestamps: true, // Disable createdAt and updatedAt
@@ -53,6 +60,20 @@ User.prototype.isValidPassword = async function (password) {
     throw createHttpError.InternalServerError(error.message);
   }
 };
+
+User.prototype.createResetPasswordToken = async function(){
+  try{
+    const resetToken = crypto.randomBytes(32, this.toString('hex'));
+
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken.digest('hex'));
+    this.passwordResetTokenExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
+    
+  } catch(error) {
+    throw createHttpError.InternalServerError(error.message);
+  }
+}
 
 // Add a 'beforeUpdate' hook to the User model
 User.beforeUpdate(async (user, options) => {
