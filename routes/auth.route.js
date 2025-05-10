@@ -5,6 +5,8 @@ const passport = require('passport');
 const { ensureLoggedOut, ensureLoggedIn } = require('connect-ensure-login');
 const { registerValidator } = require('../utils/validators');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const sendEmail = require('./../utils/email');
 
 router.get(
   '/login',
@@ -26,17 +28,70 @@ router.post(
 );
 
 router.post(
-  '/reset-pass',
+  '/request-reset',
   ensureLoggedOut({ redirectTo: '/' }),
   async (req, res, next) => {
-    try {
       const { email } = req.body;
 
       const user = await User.findOne({ where: { email } });
 
+      if (!user){
+        req.flash(
+          'error',
+          'Could not find user associated with email'
+        );
+      }
 
+      const resetToken = user.createResetPasswordToken();
+
+      await user.save();
+
+      const resetUrl = `${req.protocol}://${req.get('host')}/auth/resetPassword/${resetToken}`;
+
+      const message = `We have recieved a password reset request. Click the link below to reset your password\n\n${resetUrl}`
+      try {
+        await sendEmail({
+          email: user.email,
+          subject: 'Password change request recieved',
+          message: message
+        });
+        req.flash(
+          'info',
+          `Password reset request sent`
+        );
     } catch {
+      user.passwordResetToken = undefined;
+      user.passwordResetTokenExpires = undefined;
+      user.save
+    }
+  }
+)
 
+router.post(
+  '/resetPassword/:token',
+  ensureLoggedOut({ redirectTo: '/' }),
+  async (req, res, next) => {
+    const { token } = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const { newPassword } = req.body;
+
+    try{
+      const user = await User.findOne({
+        passwordResetToken: token,
+        resetPasswordExpires: { $gt: Date.now() }, // Ensure the token is still valid
+      });
+
+      if (!user) {
+      req.flash('error', 'Invalid or expired token');
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    req.flash('info', 'Password updated');
+    } catch(error) {
+      next(error)
     }
   }
 )
@@ -90,6 +145,29 @@ router.get(
     res.render('register', { currentPage: 'register' });
   }
 );
+
+// Route to display the password reset form
+router.get('/resetPassword/:token', async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    // Find the user by the reset token and ensure it hasn't expired
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }, // Ensure the token is still valid
+    });
+
+    if (!user) {
+      req.flash('error', 'Password reset token is invalid or has expired.');
+    }
+
+    // Render the password reset form (or redirect to a frontend page)
+    res.render('resetPassword');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+});
 
 router.post(
   '/register',
