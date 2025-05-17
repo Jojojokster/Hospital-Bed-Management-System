@@ -1,57 +1,77 @@
 <%- include('./layouts/header') %>
 
 
-<container class="table_container">
-  <!-- Add Beds Form -->
-  <h1 class="beds_title">Manage Beds</h1>
-  <div class="multiform_container">
-    <h2 class="form_title">Add Beds to Room</h2>
-    <form action="/moderator/add-beds" method="POST">
-      <div class="input_box">
-        <label for="room">Room</label>
-        <input type="text" name="room" required />
-      </div>
-      <div class="input_box">
-        <label for="floor">Floor</label>
-        <input type="number" name="floor" required />
-      </div>
-      <div class="input_box">
-        <label for="ward">Ward (Optional)</label>
-        <input type="text" name="ward" />
-      </div>
-      <div class="input_box">
-        <label for="count">Number of Beds</label>
-        <input type="number" name="count" min="1" required />
-      </div>
-      <button type="submit" class="button">Add Beds</button>
-    </form>
-  </div>
+  <container class="table_container">
+    <!-- Add Beds Form -->
+    <h1 class="beds_title">Manage Beds</h1>
+    <div class="multiform_container">
+      <h2 class="form_title">Add Beds to Room</h2>
+      <form action="/moderator/add-beds" method="POST">
+        <div class="input_box">
+          <label for="room">Room</label>
+          <input type="text" name="room" required />
+        </div>
+        <div class="input_box">
+          <label for="floor">Floor</label>
+          <input type="number" name="floor" required />
+        </div>
+        <div class="input_box">
+          <label for="ward">Ward (Optional)</label>
+          <input type="text" name="ward" />
+        </div>
+        <div class="input_box">
+          <label for="count">Number of Beds</label>
+          <input type="number" name="count" min="1" required />
+        </div>
+        <button type="submit" class="button">Add Beds</button>
+      </form>
+    </div>
 
-  <!-- Beds Table -->
-  <div class="beds_table">
-    <h2>All Beds</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Bed Number</th>
-          <th>Room</th>
-          <th>Floor</th>
-          <th>Ward</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% beds.forEach(bed => { %>
+    <!-- Beds Table -->
+    <div class="beds_table">
+      <h2>All Beds</h2>
+      <table>
+        <thead>
           <tr>
-            <td><%= bed.bed_number %></td>
-            <td><%= bed.room %></td>
-            <td><%= bed.floor %></td>
-            <td><%= bed.ward || '-' %></td>
-            <td><%= bed.status %></td>
+            <th>Bed Number</th>
+            <th>Room</th>
+            <th>Floor</th>
+            <th>Ward</th>
+            <th>Status</th>
           </tr>
-        <% }); %>
-      </tbody>
-    </table>
-  </div>
-</container>
+        </thead>
+        <tbody>
+          <% beds.forEach(bed=> { %>
+            <tr>
+              <td>
+                <%= bed.bed_number %>
+              </td>
+              <td>
+                <%= bed.room %>
+              </td>
+              <td>
+                <%= bed.floor %>
+              </td>
+              <td>
+                <%= bed.ward || '-' %>
+              </td>
+              <td>
+                <%= bed.status %>
+              </td>
+              <% if (bed?.status==='available' ) { %>
+                <td>"N/A"</td>
+              <% } else if (bed?.status==='maintenance' ) { %>
+                <td>
+                  <form action="/moderator/maintenance" method="POST">
+                    <input type="hidden" name="bed_number" value="<%= bed.bed_number %>">
+                    <button class="button" type="submit">Maintenance End</button>
+                  </form>
+                </td>
+              <% } %>
+            </tr>
+            <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </container>
 <%- include('./layouts/footer') %>

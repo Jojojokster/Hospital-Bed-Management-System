@@ -158,6 +158,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+    // Handle dropdown actions
+  document.querySelectorAll('.select-menu-bed').forEach(menu => {
+    const selectBtn = menu.querySelector('.select-btn');
+    const options = menu.querySelectorAll('.option');
+
+    if (!selectBtn || options.length === 0) {
+      console.warn('Skipping incomplete dropdown menu:', menu);
+      return; // Skip this menu if required elements are missing
+    }
+
+    // Toggle dropdown visibility
+    selectBtn.addEventListener('click', () => {
+      toggleDropdown(selectBtn); // Use the toggleDropdown function
+    });
+
+    // Handle option clicks
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+
+        const selectMenu = option.closest('.select-menu-bed');
+        const selectedValue = option.getAttribute('data-value');
+        const selectedText = option.textContent;
+
+        // Update the visible button text
+        console.log('selectMenu:', selectMenu);
+        const buttonText = selectMenu.querySelector('.sBtn-text');
+        buttonText.textContent = selectedText;
+
+        // Update the hidden input value
+        const hiddenInput = selectMenu.querySelector('input[type="hidden"]');
+        console.log('selectMenu:', hiddenInput);
+        hiddenInput.value = selectedValue;
+
+        // Hide the dropdown
+        const dropdown = selectMenu.querySelector('.options');
+        dropdown.style.display = 'none';
+
+        menu.classList.remove('active'); // Close the dropdown
+      });
+    });
+  });
+
+
   const editButton = document.querySelector("#edit-button")
   if (editButton) {
     editButton.addEventListener('click', () => {

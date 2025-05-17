@@ -33,7 +33,13 @@ router.get('/patients', async (req, res, next) => {
       };
     });
 
-    res.render('manage-patients', { patients: patientsWithBedDetails, currentPage: 'managepatients' });
+    const beds = await Bed.findAll();
+
+    const rooms = [...new Set(
+      beds.filter(b => b.status === 'available').map(b => b.bed_number)
+    )];
+
+    res.render('manage-patients', { rooms, patients: patientsWithBedDetails, currentPage: 'managepatients' });
   } catch (error) {
     next(error);
   }
@@ -298,6 +304,8 @@ router.post('/assign-bed', async (req, res) => {
       },
     });
 
+    console.log(bed)
+
     if (!bed) {
       req.flash('error', 'Invalid bed number or bed not available');
       return res.redirect('back');
@@ -401,7 +409,7 @@ router.post('/discharge-patient', async (req, res) => {
 
     // Update the bed to "available" and clear patient association
     await bed.update({
-      status: 'available',
+      status: 'maintenance',
       patient_id: null,
       expected_availability: null,
     });
@@ -434,7 +442,7 @@ router.post('/reassign-patient', async (req, res) => {
 
     // Update the bed to "available" and clear patient association
     await bed.update({
-      status: 'available',
+      status: 'maintenance',
       patient_id: null,
       expected_availability: null,
     });
@@ -444,6 +452,26 @@ router.post('/reassign-patient', async (req, res) => {
   } catch (error) {
     console.error('Error discharging patient:', error);
     req.flash('error', 'Failed to remove patient from bed');
+    res.redirect('back');
+  }
+});
+
+//Route to conclude maintenace
+router.post('/maintenace', async (req, res) => {
+  const { bed_number } = req.body;
+
+  if (!bed_number) {
+    req.flash('error', 'Bed not found')
+    return res.redirect('back')
+  }
+  try{
+    const bedInMaintenance = await Bed.findByPk({ where: { bed_number } });
+    await bedInMaintenance.update({
+      status: 'available',
+    })
+  } catch (error) {
+    console.error(error);
+    req.flash('error', 'Failed to end Maintenance.');
     res.redirect('back');
   }
 });

@@ -132,9 +132,28 @@
         <input type="hidden" name="patient_id" id="assignBedPatientId" />
 
         <!-- Bed Number Input -->
-        <div class="input_box">
+        <div class="bed_box">
           <label>Bed Number</label>
-          <input type="text" name="bed_number" min="1" required />
+          <div class="select-menu-bed" id="bed-dropdown">
+            <!-- Button to Toggle Dropdown -->
+            <div class="select-btn">
+              <span class="sBtn-text">
+                Bed Number
+              </span>
+              <i class="bx bx-chevron-down"></i>
+            </div>
+
+            <!-- Dropdown Options -->
+            <ul class="options">
+              <% rooms.forEach(r=> { %>
+                <li class="option" data-value="<%= r %>">
+                  <%= r %>
+                </li>
+                <% }); %>
+            </ul>
+            <!-- Hidden Input for Form Submission -->
+          <input type="hidden" name="bed_number" value="place" />
+          </div>
         </div>
 
         <!-- Duration Input -->
@@ -199,4 +218,4 @@
     </div>
   </div>
 
-<%- include('./layouts/footer') %>
+  <%- include('./layouts/footer') %>

@@ -584,6 +584,11 @@ ul.messages * {
     position: relative;
     display: inline-block;
   }
+
+  .select-menu-bed{
+    padding-top: 10px;
+    padding-bottom: 25px;
+  }
   
   .select-btn {
     padding: 8px 12px;
@@ -609,6 +614,7 @@ ul.messages * {
     margin: 0;
     min-width: 120px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
   }
   
   .option {
