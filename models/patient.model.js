@@ -26,7 +26,7 @@ const Patient = sequelize.define('Patient', {
     rcount: {
         type: DataTypes.ENUM("0", "1", "2", "3", "4", "5+"),
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: "0",
     },
     gender: {
         type: DataTypes.ENUM("F", "M"),
