@@ -84,7 +84,7 @@ app.use(
 app.use(
   '/moderator',
   ensureLoggedIn({ redirectTo: '/auth/login' }),
-  ensureAdmin,
+  ensureModerator,
   require('./routes/moderator.route.js')
 );
 
@@ -165,7 +165,7 @@ function ensureAdmin(req, res, next) {
   }
   
   function ensureModerator(req, res, next) {
-    if (req.user.role === roles.moderator) {
+    if (req.user.role === roles.moderator || req.user.role === roles.admin) {
       next();
     } else {
       req.flash('warning', 'you are not Authorized to see this route');
