@@ -468,7 +468,10 @@ router.post('/maintenance', async (req, res) => {
     const bedInMaintenance = await Bed.findOne({ where: { bed_number } });
     await bedInMaintenance.update({
       status: 'available',
-    })
+    });
+
+    req.flash('success', 'Bed Maintenanace ended, it is now available');
+    res.redirect('/moderator/manage-beds');
   } catch (error) {
     console.error(error);
     req.flash('error', 'Failed to end Maintenance.');
