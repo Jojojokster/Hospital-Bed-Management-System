@@ -456,8 +456,8 @@ router.post('/reassign-patient', async (req, res) => {
   }
 });
 
-//Route to conclude maintenace
-router.post('/maintenace', async (req, res) => {
+//Route to conclude maintenance
+router.post('/maintenance', async (req, res) => {
   const { bed_number } = req.body;
 
   if (!bed_number) {
