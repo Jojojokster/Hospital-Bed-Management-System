@@ -465,7 +465,7 @@ router.post('/maintenance', async (req, res) => {
     return res.redirect('back')
   }
   try{
-    const bedInMaintenance = await Bed.findByPk({ where: { bed_number } });
+    const bedInMaintenance = await Bed.findOne({ where: { bed_number } });
     await bedInMaintenance.update({
       status: 'available',
     })
