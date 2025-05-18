@@ -53,3 +53,5 @@ Add readdmission model X
 Add Forgot Password X
 
 Remove Redundant CSS
+
+Add Color coded checks for bed status (Preferably using bootstrap)

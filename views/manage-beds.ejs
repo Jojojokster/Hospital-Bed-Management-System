@@ -55,23 +55,30 @@
               <td>
                 <%= bed.ward || '-' %>
               </td>
-              <td>
-                <%= bed.status %>
-              </td>
-              <% if (bed?.status==='available' ) { %>
-                <td>"N/A"</td>
-              <% } else if (bed?.status==='maintenance' ) { %>
+              <% if (bed) { const badgeClass=bed.status==='available' ? 'bg-success' : // green
+                bed.status==='maintenance' ? 'bg-warning text-dark' : // orange 
+                'bg-danger' ; // red (occupied or anything else) 
+              %>
                 <td>
-                  <form action="/moderator/maintenance" method="POST">
-                    <input type="hidden" name="bed_number" value="<%= bed.bed_number %>">
-                    <button class="button" type="submit">Maintenance End</button>
-                  </form>
+                  <span class="badge <%= badgeClass %>">
+                    <%= bed.status==='available' ? 'N/A' : bed.status %>
+                  </span>
                 </td>
-              <% } %>
+                <% } %>
+                  <% if (bed?.status==='available' ) { %>
+                    <td>"N/A"</td>
+                    <% } else if (bed?.status==='maintenance' ) { %>
+                      <td>
+                        <form action="/moderator/maintenance" method="POST">
+                          <input type="hidden" name="bed_number" value="<%= bed.bed_number %>">
+                          <button class="button" type="submit">Maintenance End</button>
+                        </form>
+                      </td>
+                      <% } %>
             </tr>
             <% }); %>
         </tbody>
       </table>
     </div>
   </container>
-<%- include('./layouts/footer') %>
+  <%- include('./layouts/footer') %>

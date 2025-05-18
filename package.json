@@ -4,6 +4,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
+    "bootstrap": "^5.3.6",
     "connect-ensure-login": "^0.1.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
@@ -20,11 +21,12 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
+    "sass": "^1.89.0",
     "sequelize": "^6.37.5"
   },
-"scripts": {
-  "start": "concurrently \"py predictAPI.py\" \"set /a count=2 && node app.js\""
-},
+  "scripts": {
+    "start": "concurrently \"py predictAPI.py\" \"set /a count=2 && node app.js\""
+  },
   "devDependencies": {
     "concurrently": "^9.1.2"
   }
