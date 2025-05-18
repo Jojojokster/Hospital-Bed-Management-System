@@ -374,7 +374,7 @@ h1.table {
 }
   
 table {
-    min-width: 600px;
+    min-width: 800px;
     border: none;
     max-width: 2000px;
     border-spacing: 0;
@@ -400,9 +400,6 @@ div.table h2{
     position: relative;
 }
 
-
-
-  
 thead {
     font-size: 1.25rem;
     color: #fff;
@@ -416,7 +413,7 @@ thead tr {
   
 thead th {
     padding: 8px 0;
-    text-align: left;
+    text-align: center;
 }
   
 table th:first-child {

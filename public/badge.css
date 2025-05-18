@@ -1,0 +1,17 @@
+/* Minimal Bootstrap-style badges  */
+.badge {
+  display: inline-block;
+  padding: .35em .65em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .375rem;
+}
+
+/* Colour variants */
+.badge-success  { color: #fff; background-color: #198754; } /* green  */
+.badge-danger   { color: #fff; background-color: #dc3545; } /* red    */
+.badge-warning  { color: #000; background-color: #ffc107; } /* orange */

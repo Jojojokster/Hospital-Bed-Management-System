@@ -38,6 +38,7 @@
             <th>Floor</th>
             <th>Ward</th>
             <th>Status</th>
+            <th>Options</th>
           </tr>
         </thead>
         <tbody>
@@ -55,26 +56,24 @@
               <td>
                 <%= bed.ward || '-' %>
               </td>
-              <% if (bed) { const badgeClass=bed.status==='available' ? 'bg-success' : // green
-                bed.status==='maintenance' ? 'bg-warning text-dark' : // orange 
-                'bg-danger' ; // red (occupied or anything else) 
-              %>
-                <td>
-                  <span class="badge <%= badgeClass %>">
-                    <%= bed.status==='available' ? 'N/A' : bed.status %>
-                  </span>
-                </td>
+              <td>
+                <span class="badge
+                  <%= bed.status === 'available'
+                  ? 'badge-success'
+                  : bed.status === 'maintenance'
+                    ? 'badge-warning'
+                    : 'badge-danger' %>">
+                  <%= bed.status %>
+                </span>
+              </td>
+               <% if (bed?.status==='maintenance' ) { %>
+                  <td>
+                    <form action="/moderator/maintenance" method="POST">
+                      <input type="hidden" name="bed_number" value="<%= bed.bed_number %>">
+                      <button class="button" type="submit">Maintenance End</button>
+                    </form>
+                  </td>
                 <% } %>
-                  <% if (bed?.status==='available' ) { %>
-                    <td>"N/A"</td>
-                    <% } else if (bed?.status==='maintenance' ) { %>
-                      <td>
-                        <form action="/moderator/maintenance" method="POST">
-                          <input type="hidden" name="bed_number" value="<%= bed.bed_number %>">
-                          <button class="button" type="submit">Maintenance End</button>
-                        </form>
-                      </td>
-                      <% } %>
             </tr>
             <% }); %>
         </tbody>
