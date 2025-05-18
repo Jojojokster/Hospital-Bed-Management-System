@@ -16,7 +16,7 @@ const sequelize = require('../config/database'); // Import Sequelize instance
 // Define associations
 Patient.hasOne(Bed, { foreignKey: 'patient_id' }); // A patient can have one bed
 Bed.belongsTo(Patient, { foreignKey: 'patient_id' }); // A bed belongs to a patient
-Patient.hasMany(ReadmissionLog, { foreignKey: 'patient_id' }); // A patient can have one bed
+Patient.hasMany(ReadmissionLog, { foreignKey: 'patient_id' }); // A patient can have many Readmissions
 ReadmissionLog.belongsTo(Patient, { foreignKey: 'patient_id' }); 
 
 // Sync all models with the database

@@ -1,1 +1,55 @@
-Add new fields to patient info to match patient modelI w
+Users & Authentication
+
+Add models/user.js (columns: user_id, email, password_hash, role). X
+
+Create Role Based Access X
+
+Create Manage Beds X
+
+Create Manage Patients X
+
+Create routes/auth.js → POST /auth/login returns JWT; use bcrypt to verify hashed passwords. X
+
+Wire existing middleware/auth.js into routes/moderator.js; block all write routes unless role = Admin or BedManager. X
+
+Database integrity
+
+Add layouts for ease of use/organisation X
+
+Add Database.js for database sync on app start X
+
+Add index to check database relations X
+
+Add unique index on Beds.bed_label and non-unique index on Beds.status. X
+
+Validation
+
+Insert express-validator checks in /admit, /update, /discharge routes; return 422 on malformed payloads. X
+
+Transactions / Concurrency
+
+In controllers/bedController.js wrap “create patient + mark bed occupied” inside sequelize.transaction() with SELECT … FOR UPDATE. X
+
+Re-run Artillery script; target timeout rate ≤ 0.5 %. X
+
+Prediction service
+
+Append a /health route to predictAPI.py that returns {"status":"ok","model_version":"v1.0"}. 
+
+Pull model path and port from os.environ; update .env.example. X
+
+Runtime script (npm start) X
+
+Replace Windows-only set /a count=2 && with cross-env for cross-platform support. X
+
+Service layer refactor
+
+Move raw queries from routes/moderator.js into services/patientService.js and services/bedService.js; keep controllers thin.
+
+Add flash messages for better error handling X
+
+Add readdmission model X
+
+Add Forgot Password X
+
+Remove Redundant CSS
