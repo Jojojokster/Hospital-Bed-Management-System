@@ -18,6 +18,11 @@ const Patient = sequelize.define('Patient', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    admission_datetime: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,   // timestamp when the row is first inserted
+    },
     rcount: {
         type: DataTypes.ENUM("0", "1", "2", "3", "4", "5+"),
         allowNull: false,
@@ -29,14 +34,14 @@ const Patient = sequelize.define('Patient', {
     },
     admission: {
         type: DataTypes.ENUM(
-            "emergency", 
-            "outpatient", 
-            "inpatient", 
-            "day_patient", 
-            "urgent", 
-            "routine", 
-            "elective", 
-            "direct", 
+            "emergency",
+            "outpatient",
+            "inpatient",
+            "day_patient",
+            "urgent",
+            "routine",
+            "elective",
+            "direct",
             "holding"
         ),
         allowNull: false,
@@ -236,11 +241,11 @@ Patient.beforeCreate(async (patient, options) => {
 
     console.log(updatedPatientData)
 
-     // Predict the length of stay
-     const predictedLength = await predictLengthOfStay(updatedPatientData);
+    // Predict the length of stay
+    const predictedLength = await predictLengthOfStay(updatedPatientData);
 
-     // Update the patient record with the prediction
-     patient.predicted_length_of_stay = predictedLength;
+    // Update the patient record with the prediction
+    patient.predicted_length_of_stay = predictedLength;
 
     // Check if a patient with the same name already exists
     const existingPatient = await Patient.findOne({
@@ -257,19 +262,22 @@ Patient.beforeCreate(async (patient, options) => {
         const currentIndex = rcountValues.indexOf(existingPatient.rcount); // Find the current index
         const nextIndex = Math.min(currentIndex + 1, rcountValues.length - 1); // Increment, but cap at "5+"
         existingPatient.rcount = rcountValues[nextIndex]; // Update rcount to the next value
-    
+
         // Mark the patient as not discharged
         existingPatient.discharged = false;
-    
+
+        // ❸ **refresh admission timestamp**
+        existingPatient.admission_datetime = new Date();
+
         // Log the reassignment
         await ReadmissionLog.create({
             patient_id: existingPatient.patient_id,
             reason: patient.reason_for_stay || "No reason provided",
         });
-    
+
         // Save the updated patient record
         await existingPatient.save();
-    
+
         // Prevent creating a new patient record
         throw new Error('PatientReadmitted'); // Use a custom error to indicate readmission
     }
