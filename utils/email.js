@@ -1,17 +1,18 @@
-const nodemailer =  require('nodemailer')
+const nodemailer = require('nodemailer');
 
 
 const sendEmail = async (option) => {
 
     //Create Transporter
     const transporter = nodemailer.createTransport({
-        service: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        auth:{
-            user: process.env.EMAIL_USER,
-            password: process.env.EMAIL_PASSWORD
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
         }
-    })
+    });
+
 
 
     //DEFINE EMAIL OPTIONS
@@ -22,7 +23,7 @@ const sendEmail = async (option) => {
         text: option.message
     }
 
-    await transporter.sendEmail(emailOptions);
+    await transporter.sendMail(emailOptions);
 }
 
 module.exports = sendEmail;

@@ -40,9 +40,10 @@ router.post(
           'error',
           'Could not find user associated with email'
         );
+        return res.redirect('back');
       }
 
-      const resetToken = user.createResetPasswordToken();
+      const resetToken = await user.createResetPasswordToken();
 
       await user.save();
 
@@ -59,42 +60,18 @@ router.post(
           'info',
           `Password reset request sent`
         );
-    } catch {
+        res.redirect('back');
+    } catch(error) {
       user.passwordResetToken = undefined;
       user.passwordResetTokenExpires = undefined;
-      user.save
+      await user.save();
+      console.error(error)
+      req.flash('error', 'User not found');
+      res.redirect('back');
     }
   }
 )
 
-router.post(
-  '/resetPassword/:token',
-  ensureLoggedOut({ redirectTo: '/' }),
-  async (req, res, next) => {
-    const { token } = crypto.createHash('sha256').update(req.params.token).digest('hex');
-    const { newPassword } = req.body;
-
-    try{
-      const user = await User.findOne({
-        passwordResetToken: token,
-        resetPasswordExpires: { $gt: Date.now() }, // Ensure the token is still valid
-      });
-
-      if (!user) {
-      req.flash('error', 'Invalid or expired token');
-    }
-
-    user.password = newPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-    await user.save();
-
-    req.flash('info', 'Password updated');
-    } catch(error) {
-      next(error)
-    }
-  }
-)
 
 router.post(
   '/update-password',
@@ -162,12 +139,49 @@ router.get('/resetPassword/:token', async (req, res) => {
     }
 
     // Render the password reset form (or redirect to a frontend page)
-    res.render('resetPassword');
+    res.render('resetPassword', { token, currentPage: 'resetPassword' });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
   }
 });
+
+router.post(
+  '/resetPassword/:token',
+  ensureLoggedOut({ redirectTo: '/' }),
+  async (req, res, next) => {
+    const { token } = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const { newPassword } = req.body;
+    const { confirm_password } = req.body;
+
+    try{
+      if (newPassword != confirm_password){
+        req.flash('error', 'Passwords do not match')
+        return res.redirect('back')
+      }
+
+      const user = await User.findOne({
+        passwordResetToken: token,
+        resetPasswordExpires: { $gt: Date.now() }, // Ensure the token is still valid
+      });
+
+      if (!user) {
+      req.flash('error', 'Invalid or expired token');
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    req.flash('info', 'Password updated');
+    res.redirect('back')
+    } catch(error) {
+      next(error)
+    }
+  }
+)
+
 
 router.post(
   '/register',
