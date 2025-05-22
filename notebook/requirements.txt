@@ -1,0 +1,9 @@
+ipython==8.27.0
+ipython==8.12.3
+joblib==1.4.2
+matplotlib==3.10.3
+numpy==2.2.6
+pandas==2.2.3
+pydotplus==2.0.2
+scikit_learn==1.6.1
+xgboost==3.0.1
