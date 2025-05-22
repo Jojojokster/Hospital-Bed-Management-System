@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const { predictLengthOfStay } = require('../public/predictLOS')
+const { predictLengthOfStay } = require('../public/predictLOS');
+const { ReadmissionLog } = require('./readmissionLog.model');
 require('dotenv').config();
 
 // Define the Patient model with additional fields
@@ -270,6 +271,8 @@ Patient.beforeCreate(async (patient, options) => {
         existingPatient.admission_datetime = new Date();
 
         // Log the reassignment
+        // after you’ve done sequelize.define('ReadmissionLog', …) somewhere
+        const ReadmissionLog = sequelize.models.ReadmissionLog;
         await ReadmissionLog.create({
             patient_id: existingPatient.patient_id,
             reason: patient.reason_for_stay || "No reason provided",

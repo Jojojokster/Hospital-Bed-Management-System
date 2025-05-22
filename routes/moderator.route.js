@@ -3,6 +3,7 @@ const router = require('express').Router();
 const { body, validationResult } = require('express-validator');
 const { patientValidator } = require('../utils/validators');
 const { Bed, Patient, ReadmissionLog } = require('../models'); // Import models
+const logger = require('../utils/logger');
 
 // Route to fetch all patients
 router.get('/patients', async (req, res, next) => {
@@ -304,7 +305,11 @@ router.post('/assign-bed', async (req, res) => {
       },
     });
 
-    console.log(bed)
+    const patient = await Patient.findOne({
+      where: {
+        patient_id: patient_id,
+      },
+    });
 
     if (!bed) {
       req.flash('error', 'Invalid bed number or bed not available');
@@ -322,9 +327,11 @@ router.post('/assign-bed', async (req, res) => {
       expected_availability,
     });
 
+    logger.info(`Patient ${patient.patient_forename} successfully admitted to bed# ${bed_number} for ${duration} days`);
     req.flash('success', `Bed ${bed_number} assigned successfully`);
     res.redirect('/moderator/patients');
   } catch (error) {
+    logger.error(error);
     req.flash('error', 'Failed to assign bed');
     res.redirect('back');
   }
@@ -345,6 +352,12 @@ router.post('/extend-stay', async (req, res) => {
     const bed = await Bed.findOne({
       where: { patient_id },
       include: [{ model: Patient }],
+    });
+
+    const patient = await Patient.findOne({
+      where: {
+        patient_id: patient_id,
+      },
     });
 
     if (!bed || bed.status !== 'occupied') {
@@ -370,8 +383,10 @@ router.post('/extend-stay', async (req, res) => {
       'info',
       `Extended stay for ${bed.patient.email} in bed ${bed.bed_number} until ${newExpectedAvailability.toLocaleDateString()} (Reason: ${extension_reason})`
     );
+    logger.info(`Patient ${patient.patient_forename} Stay extended for ${duration} days`);
     res.redirect('/moderator/manage-beds');
   } catch (error) {
+    logger.error(error);
     console.error('Error extending stay:', error);
     req.flash('error', 'Failed to extend stay');
     res.redirect('back');
@@ -419,6 +434,7 @@ router.post('/discharge-patient', async (req, res) => {
     })
 
     req.flash('success', 'Patient discharged successfully');
+    logger.info(`Patient ${patient.patient_forename} successfully discharged from bed# ${bed_number} `);
     res.redirect('/moderator/patients');
   } catch (error) {
     console.error('Error discharging patient:', error);
