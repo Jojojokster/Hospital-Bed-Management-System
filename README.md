@@ -153,7 +153,3 @@ Database queries confirm each state change, and log lines in the console provide
 Node is stateless beyond the session store, so multiple instances can run behind a load‑balancer. `predictAPI.py` is also stateless; additional replicas can be spawned to reduce ML latency. Database connection pooling is handled by Sequelize.
 
 ---
-
-## License
-
-MIT © 2025  Hospital Bed Management System Project
